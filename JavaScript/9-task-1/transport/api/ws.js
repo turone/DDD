@@ -1,13 +1,19 @@
 'use strict';
 
-const console = require('./logger.js');
-const WebSocketServer = require('ws').WebSocketServer;
+//const console = require('./logger.js');
+//const { parse } = require('node:url');
+const { WebSocketServer } = require('ws');
 
-module.exports = (routing, server) => {
-  
-  const ws = new WebSocketServer({server});
+module.exports = (routing, options, console) => {
+
+  //console.log(options);
+
+  const ws = new WebSocketServer({ noServer: true, rejectUnauthorized: false });
+
+
 
   ws.on('connection', (connection, req) => {
+    //console.dir(connection);
     const ip = req.socket.remoteAddress;
     connection.on('message', async (message) => {
       const obj = JSON.parse(message);
@@ -28,6 +34,23 @@ module.exports = (routing, server) => {
       }
     });
   });
+  options.server.on('upgrade', function upgrade(request, socket, head) {
+    //console.log(request.url);
 
-  console.log(`API on port `);
+    console.log(options.apiServer.path, request.url);
+    if (options.apiServer.path === request.url) {
+
+      ws.handleUpgrade(request, socket, head, (ws1) => {
+        ws.emit('connection', ws1, request);
+      });
+    } else {
+      socket.destroy();
+
+    }
+  });
+
+
+
+
+  // console.log(`API on port `);
 };

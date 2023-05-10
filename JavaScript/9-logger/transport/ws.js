@@ -1,11 +1,9 @@
 'use strict';
 
-const console = require('./logger.js');
-const WebSocketServer = require('ws').WebSocketServer;
+const { Server } = require('ws');
 
-module.exports = (routing, server) => {
-  
-  const ws = new WebSocketServer({server});
+module.exports = (routing, port, console) => {
+  const ws = new Server({ port });
 
   ws.on('connection', (connection, req) => {
     const ip = req.socket.remoteAddress;
@@ -21,7 +19,7 @@ module.exports = (routing, server) => {
       console.log(`${ip} ${name}.${method}(${parameters})`);
       try {
         const result = await handler(...args);
-        connection.send(JSON.stringify(result.rows), { binary: false });
+        connection.send(JSON.stringify(result), { binary: false });
       } catch (err) {
         console.error(err);
         connection.send('"Server error"', { binary: false });
@@ -29,5 +27,5 @@ module.exports = (routing, server) => {
     });
   });
 
-  console.log(`API on port `);
+  console.log(`API on port ${port}`);
 };

@@ -3,7 +3,7 @@ const config = require('./config/config.js');
 const fsp = require('node:fs').promises;
 const path = require('node:path');
 const server = require('./ws.js');
-const staticServer = require('./static.js');
+const staticServer = require('./transport/static.js');
 const load = require('./load.js');
 const db = require('./db.js');
 const hash = require('./hash.js');
@@ -25,11 +25,11 @@ const routing = {};
     const serviceName = path.basename(fileName, '.js');
     routing[serviceName] = await load(filePath, sandbox);
   }
-
-  const webServer = staticServer('./static', config.transport.staticServer);
+  //console.log(routing);
+  // const webServer = staticServer('./static', config.transport.staticServer.type);
   /* webServer.listen(config.static.port, () => {
      console.log('Listen port 8000');
    });*/
-  console.log(routing);
-  server(routing, webServer);
+  // server(routing, webServer, logger);
+  require('./transport.js')(routing, config.transport, console);
 })();
