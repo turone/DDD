@@ -1,35 +1,33 @@
 'use strict';
 
-const pg = require('pg');
+const mysql = require('mysql2/promise');
 
-const pool = new pg.Pool({
-  host: '/var/run/postgresql',
-  port: 5432,
+const pool = mysql.createPool({
   database: 'example',
   user: 'marcus',
-  password: 'marcus',
+  password: 'marcus123',
 });
-pool.connect();
+
 module.exports = (table) => ({
   
   async query(sql, args) {
     const start = Date.now()
-    const res = await pool.query(sql, args);
+    const res = pool.execute(sql, args);
     const duration = Date.now() - start;
-    console.log('executed query', { sql, args, duration, rows: res.rowCount })
+    console.log('executed query', duration)
     // console.log(sql, args);
     return res;
   },
 
-  async read(id, fields = ['*']) {
+ async read(id, fields = ['*']) {
     const names = fields.join(', ');
     const sql = `SELECT ${names} FROM ${table}`;
-    if (!id) return pool.query(sql);
+    if (!id) return pool.execute(sql);
     //console.log(`${sql} WHERE id = $1`, [id]);
     const start = performance.now();
-    const res = await pool.query(`${sql} WHERE id = $1`, [id]);
-    const duration = performance.now() - start;
-    console.log('executed query', { sql, duration, rows: res.rowCount })
+    const res = await pool.execute(`${sql} WHERE id = ?`, [id]);
+    performance.now() - start;
+    console.log('executed query', duration);
     return res;
 
   },

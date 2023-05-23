@@ -51,6 +51,7 @@ module.exports = async (routing, config, console) => {
   let optionsStatic = {};
   let { oneport, staticServer, apiServer, certOptions } = config;
   if (staticServer.secured) { console.log(optionsStatic = loadCert(certOptions)); }
+  if (staticServer.type==='http2'){ optionsStatic.allowHTTP1= true;}
   const apiOptions = {};
   let transport = new Map();
 

@@ -55,7 +55,7 @@ const scaffold = (url) => {
 };
 let api = {};
 (async () => {
-  api = await scaffold('wss://localhost/api/')({
+  api = await scaffold('https://192.168.3.79')({
     user: {
       create: ['record'],
       read: ['id'],

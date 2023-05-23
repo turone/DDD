@@ -21,7 +21,7 @@ module.exports = {
   transport:
   {
     oneport: true,
-    staticServer: { type: 'https', port: 443, path: './static', secured: true },
+    staticServer: { type: 'http2', port: 443, path: './static', secured: true },
     apiServer: { type: ['ws', 'https'], port: 443, path: '/api/' },
     certOptions: {
       key: '/config/key/localhost-privkey.pem',

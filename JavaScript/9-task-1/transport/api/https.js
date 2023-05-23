@@ -22,25 +22,22 @@ const receiveArgs = async (req) => {
 module.exports = (routing, configServer, console) => {
   const requestListener = async (req, res) => {
     // console.log(configServer);
-    res.writeHead(200, HEADERS);
+   
 
     const { url, socket } = req;
     const [place, name, method] = url.substring(1).split('/');
     if (place !== 'api') {
-      console.log({ place });
       if (configServer.getListener) return true;
       return res.end('"Not found -place"');
     }
+    res.writeHead(200, HEADERS);
     if (req.method !== 'POST') return res.end('"Not found post"');
     const entity = routing[name];
     if (!entity) return res.end('"Not found entity"');
     const handler = entity[method];
     if (!handler) return res.end('"Not found"');
     const { args } = await receiveArgs(req);
-    console.dir(`${socket.remoteAddress} ${method} ${url}  ${args}`);
-    console.table(args);
     const result = (await handler(...args));
-    console.table(result);
     res.end(JSON.stringify(result));
   };
   if (configServer.getListener) return requestListener;

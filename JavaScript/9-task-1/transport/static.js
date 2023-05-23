@@ -45,16 +45,16 @@ const requestListener = (root, addRouteRequest) => (!addRouteRequest) ? async (r
   const mimeType = MIME_TYPES[file.ext] || MIME_TYPES.default;
   res.writeHead(statusCode, { ...HEADERS, 'Content-Type': mimeType });
   file.stream.pipe(res);
-  console.log(`${req.method} ${req.url} ${statusCode}`);
+//  console.log(`${req.method} ${req.url} ${statusCode}`);
 
 } : async (req, res) => {
   if (!await addRouteRequest(req, res)) return;
   const file = await prepareFile(req.url, root);
   const statusCode = file.found ? 200 : 404;
   const mimeType = MIME_TYPES[file.ext] || MIME_TYPES.default;
-  res.writeHead(statusCode, { ...HEADERS, 'Content-Type': mimeType });
+ // res.writeHead(statusCode, { ...HEADERS, 'Content-Type': mimeType });
   file.stream.pipe(res);
-  console.log(`${req.method} ${req.url} ${statusCode}`);
+ // console.log(`${req.method} ${req.url} ${statusCode}`);
 
 }
 
